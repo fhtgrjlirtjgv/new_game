@@ -1,20 +1,20 @@
 wwwwwwwwwwwwwwwwwwwwwwwww
-w                       w
-w                       w
-wr                c     w
-wfffffmfffffffmfffffmfflw
+w  v                    w
+wr v                    w
+w  v    ee        c     w
+wfffgfmfffggffmffgffmfflw
 w                      lw
-w         c c          lw
-wlffffffffffmmmfffffffffw
+w         c c   e      lw
+wlfffffgffsfmmmffffggfffw
 wl             c        w
+wl    e                 w
+wfffgfffmffsffgfffggffflw
+w  c                   lw
+w     e     c          lw
+wlfsffmffgfffgfffggfmfffw
 wl                      w
-wfffffffmfffffffffffffflw
-w                      lw
-w           c          lw
-wlffffmfffffffffffffmfffw
-wl                      w
-wl           c          w
-wffmfffffffmffffffl     w
-w                 l  c  w
-wp                l     w
+wl      e    c          w
+wffmfgffgffmffggffl     w
+w                 l     w
+wp                l  a  w
 wwwwwwwwwwwwwwwwwwwwwwwww
