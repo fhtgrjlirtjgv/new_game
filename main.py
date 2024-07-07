@@ -29,6 +29,10 @@ coin_img = image.load("image/gold_pile_1.png")
 orc_img = image.load("image/orc_new.png")
 orc2_img = image.load("image/orc_warrior_new.png")
 ladder_img = image.load("image/pixil-frame-0.png")
+floor_img = image.load("image/brick_brown-vines_1.png")
+magma_img = image.load("image/lava_3.png")
+banner_img = image.load("image/banner_1.png")
+ret2_img = image.load("image/return_zot_old.png")
 class Sprite(sprite.Sprite):
     def __init__(self, sprite_img, width, height, x , y ):
         super().__init__()
@@ -115,6 +119,14 @@ with open("map1.txt", "r") as f:
                 enemys.add(Enemy(orc_img, TILESIZE-5, TILESIZE-5, x, y))
             if symbol == "l":
                 Sprite(ladder_img, TILESIZE, TILESIZE, x, y)
+            if symbol == "f":
+                Sprite(floor_img, TILESIZE, TILESIZE, x, y)
+            if symbol == "m":
+                Sprite(magma_img, TILESIZE, TILESIZE, x, y)
+            if symbol == "b":
+                Sprite(banner_img, TILESIZE, TILESIZE, x, y)
+            if symbol == "r":
+                Sprite(ret2_img, TILESIZE, TILESIZE, x, y)
             x +=TILESIZE
         y +=TILESIZE
         x = 0        
