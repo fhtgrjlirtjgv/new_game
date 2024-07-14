@@ -6,6 +6,7 @@ init()
 font.init()
 font1 = font.SysFont("impact", 150, )
 game_over_text = font1.render("GAME_OVER", True, (150, 0, 0))
+#score_text = font1.render("Score", False, (100,100,100))
 mixer.init()
 mixer.music.load('Тема королевства.mp3')
 mixer.music.play()
@@ -56,8 +57,10 @@ class Player(Sprite):
         super().__init__(sprite_img, width, height, x, y)
         self.hp = 100
         self.speed = 3
-        self.ground = True
+        self.ground = False
         self.jump_speed = 35
+        self.gravity = 0.5
+        self.y_speed = 0
 
     def update(self):
         old_pos = self.rect.x, self.rect.y
@@ -70,18 +73,48 @@ class Player(Sprite):
             self.rect.x += self.speed
         if key_pressed[K_SPACE] and self.ground:
             self.ground = False
+            self.y_speed = 0
             self.rect.y -=self.jump_speed
 
+       
 
         enemy_collide = sprite.spritecollide(self, enemys, False, sprite.collide_mask)
         if len(enemy_collide) > 0:
             self.hp -= 100
 
-        wall_collide = sprite.spritecollide(self, walls, False, sprite.collide_mask)
-        if len(wall_collide) > 0:
-            self.rect.x, self.rect.y = old_pos           
+        wall_collide = sprite.spritecollide(self, walls, False)
+        if len(wall_collide) == 0:
+            self.ground = False
+        for wall in wall_collide:
+            if wall.rect.y > self.rect.y:
+                self.ground = True
+                self.y_speed = 0
+                self.rect.bottom = wall.rect.y 
+                break
+            else:
+                self.ground = False 
+                self.rect.x, self.rect.y = old_pos
+
+        
+
+        ladder_collide = sprite.spritecollide(self, ladder, False)
+        if len(ladder_collide) > 0:
+            if key_pressed [K_w]:
+                self.rect.y -= self.speed
+
+        if not self.ground and not len(ladder_collide) > 0:
+            self.y_speed += self.gravity
+            self.rect.y += self.y_speed
 
 
+        ground_collide = sprite.spritecollide(self, ground, False)
+        if len(ground_collide) > 0:
+
+
+
+       # coin_collide = sprite.spritecollide(self, coin_img,False, sprite.collide_mask)
+      #  if len(coin_collide) > 0:
+       #     self
 
 class Enemy(Sprite):
     def __init__(self, sprite_img, width, height, x, y):
@@ -118,7 +151,9 @@ class Enemy(Sprite):
 player = Player(player_img,30, 30, 300, 300)
 walls = sprite.Group()
 enemys = sprite.Group()
-
+ladder = sprite.Group()
+ground = sprite.Group()
+fake = sprite.Group()
 
 with open("map1.txt", "r",) as f:
     map = f.readlines()
@@ -136,23 +171,23 @@ with open("map1.txt", "r",) as f:
             if symbol == "e":
                 enemys.add(Enemy(orc_img, TILESIZE-5, TILESIZE-5, x, y))
             if symbol == "l":
-                Sprite(ladder_img, TILESIZE, TILESIZE, x, y)
+                ladder.add(Sprite(ladder_img, TILESIZE, TILESIZE, x, y))
             if symbol == "f":
-                walls.add(Sprite(floor_img, TILESIZE, TILESIZE, x, y))
+                ground.add(Sprite(floor_img, TILESIZE, TILESIZE, x, y))
             if symbol == "m":
-                Sprite(magma_img, TILESIZE, TILESIZE, x, y)
+                fake.add(Sprite(magma_img, TILESIZE, TILESIZE, x, y))
             if symbol == "b":
                 Sprite(banner_img, TILESIZE, TILESIZE, x, y)
             if symbol == "r":
                 Sprite(ret2_img, 70, 70, x, y)
             if symbol == "g":
-                walls.add(Sprite(orc5_img,TILESIZE, TILESIZE, x, y))
+                ground.add(Sprite(orc5_img,TILESIZE, TILESIZE, x, y))
             if symbol == "t":
                 Sprite(torch_img, TILESIZE, TILESIZE, x, y)
             if symbol == "v":
                 walls.add(Sprite(barrier_img, TILESIZE, TILESIZE, x, y))
             if symbol == "s":
-                Sprite(sand_img, TILESIZE, TILESIZE, x, y)
+                fake.add(Sprite(sand_img, TILESIZE, TILESIZE, x, y))
             if symbol == "a":
                 Sprite(axe_img, TILESIZE, TILESIZE, x, y)
             x +=TILESIZE
