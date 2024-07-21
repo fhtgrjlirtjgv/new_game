@@ -5,7 +5,7 @@ w  v    ee        c     w
 wfffgfmfffggffmffgffmfflw
 w                      lw
 w         c c   e      lw
-wlfffffgffsfmmmffffggfffw
+wlfffffgffsfmmgffffggfffw
 wl             c        w
 wl    e                 w
 wfffgfffmffsffgfffggffflw
@@ -17,4 +17,4 @@ wl      e    c          w
 wffmfgffgffmffggffl     w
 w                 l     w
 wp                l  a  w
-wwwwwwwwwwwwwwwwwwwwwwwww
+wfggfffffgggfffgffgfffffw
