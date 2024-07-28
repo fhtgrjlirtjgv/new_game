@@ -1,6 +1,7 @@
 from random import choice
 from typing import Any
 from pygame import *
+import pygame_menu
 
 init()
 font.init()
@@ -9,10 +10,11 @@ font2 = font.SysFont("impact", 30, )
 game_over_text = font1.render("GAME_OVER", True, (150, 0, 0))
 score_text = font2.render("Score 0", False, (255,255,255))
 hp_text = font2.render("HP 100", False, (255,0,0))
-mixer.init()
-mixer.music.load('Тема королевства.mp3')
-mixer.music.play()
-mixer.music.set_volume(0.2)
+win_text = font1.render("YOU WIN", False, (0,255,0))
+# mixer.init()
+# mixer.music.load('Тема королевства.mp3')
+# mixer.music.play()
+# mixer.music.set_volume(0.2)
 MAP_WIDTH, MAP_HEIGHT =25, 20
 TILESIZE = 35
 
@@ -57,6 +59,7 @@ class Sprite(sprite.Sprite):
 class Player(Sprite):
     def __init__(self, sprite_img, width, height, x, y):
         super().__init__(sprite_img, width, height, x, y)
+        self.axe = None
         self.hp = 100
         self.speed = 3
         self.ground = False
@@ -67,6 +70,8 @@ class Player(Sprite):
         self.hit_timer = 0
 
     def update(self):
+        global hp_text,score_text
+        
         old_pos = self.rect.x, self.rect.y
         key_pressed = key.get_pressed()
         if key_pressed[K_a] and self.rect.x > 0:
@@ -84,14 +89,25 @@ class Player(Sprite):
 
         enemy_collide = sprite.spritecollide(self, enemys, False, sprite.collide_mask)
         if len(enemy_collide) > 0:
-            if self.hit_timer != 0:
+            if self.hit_timer == 0:
                 self.hp -=20
                 self.hit_timer = time.get_ticks()
+                hp_text = font2.render(f"HP {player.hp}", False, (255,0,0))
             else:
                 if time.get_ticks() - self.hit_timer> 2000:
                     self.hit_timer = 0
 
-        wall_collide = sprite.spritecollide(self, walls, False)
+
+
+
+          
+
+
+        if len(enemys) ==0:
+            for barrier in barriers:
+                barrier.kill()
+
+        wall_collide = sprite.spritecollide(self, walls, False) 
         if len(wall_collide) > 0:
             self.rect.x , self.rect.y = old_pos
         wall_collide = sprite.spritecollide(self, ground, False)
@@ -119,17 +135,22 @@ class Player(Sprite):
             self.rect.y += self.y_speed
 
 
-        
+        # door_collide = sprite.spritecollide(self, superdoor,False, sprite.collide_mask)
+        # if len(door_collide) > 0:
+        #     if player 
 
-        # coin_collide = sprite.spritecollide(self, coin_img,False, sprite.collide_mask)
-        # if len(coin_collide) > 0:
-        #     self
+        coin_collide = sprite.spritecollide(self, coins,True, sprite.collide_mask)
+        if len(coin_collide) > 0:
+            self.score +=1
+            score_text = font2.render(f"Score {self.score}", False, (255,255,255))
 
-        magma_collide = sprite.spritecollide(self, walls,False, sprite.collide_mask)
+
+        magma_collide = sprite.spritecollide(self, fake,False, sprite.collide_mask)
         if len(magma_collide) > 0:
-            if self.hit_timer != 0:
-                self.hp -=20
+            if self.hit_timer == 0:
+                self.hp -=10
                 self.hit_timer = time.get_ticks()
+                hp_text = font2.render(f"HP {player.hp}", False, (255,0,0))
             else:
                 if time.get_ticks() - self.hit_timer> 2000:
                     self.hit_timer = 0
@@ -169,6 +190,14 @@ class Enemy(Sprite):
                 self.dir = "right"
 
 
+
+
+
+# class Axe(Sprite):
+
+
+
+
 player = Player(player_img,30, 30, 300, 300)
 walls = sprite.Group()
 enemys = sprite.Group()
@@ -177,6 +206,10 @@ ground = sprite.Group()
 fake = sprite.Group()
 sand = sprite.Group()
 axe = sprite.Group()
+coins = sprite.Group()
+barriers = sprite.Group()
+superdoor = sprite.Group()
+
 with open("map1.txt", "r",) as f:
     map = f.readlines()
     x = 0
@@ -189,7 +222,7 @@ with open("map1.txt", "r",) as f:
                 player.rect.x = x
                 player.rect.y = y
             if symbol == "c":
-                treasure = Sprite(coin_img, 30 ,30, x, y)
+                coins.add(Sprite(coin_img, 30 ,30, x, y))
             if symbol == "e":
                 enemys.add(Enemy(orc_img, TILESIZE-5, TILESIZE-5, x, y))
             if symbol == "l":
@@ -197,17 +230,22 @@ with open("map1.txt", "r",) as f:
             if symbol == "f":
                 ground.add(Sprite(floor_img, TILESIZE, TILESIZE, x, y))
             if symbol == "m":
-                ground.add(Sprite(magma_img, TILESIZE, TILESIZE, x, y))
+                magma = Sprite(magma_img, TILESIZE, TILESIZE, x, y)
+                fake.add(magma)
+                ground.add(magma)
             if symbol == "b":
                 Sprite(banner_img, TILESIZE, TILESIZE, x, y)
             if symbol == "r":
-                Sprite(ret2_img, 70, 70, x, y)
+                superdoor = Sprite(ret2_img, 70, 70, x, y)
+                # superdoor.add(ret2_img)
             if symbol == "g":
                 ground.add(Sprite(orc5_img,TILESIZE, TILESIZE, x, y))
             if symbol == "t":
                 Sprite(torch_img, TILESIZE, TILESIZE, x, y)
             if symbol == "v":
-                walls.add(Sprite(barrier_img, TILESIZE, TILESIZE, x, y))
+                barrier = Sprite(barrier_img, TILESIZE, TILESIZE, x, y)
+                walls.add(barrier)
+                barriers.add(barrier)
             if symbol == "s":
                 sand.add(Sprite(sand_img, TILESIZE, TILESIZE, x, y))
             if symbol == "a":
@@ -222,6 +260,40 @@ with open("map1.txt", "r",) as f:
 
 run = True
 finish = False
+
+
+
+def set_difficulty(selected, value):
+    """
+    Set the difficulty of the game.
+    """
+    print(f'Set difficulty to {selected[0]} ({value})')
+
+def start_the_game():
+    # Do the job here !
+    global run
+    run = True
+    menu.disable()
+
+#завантажуємо картинку
+# myimage = pygame_menu.baseimage.BaseImage(
+    # image_path='infinite_starts.jpg',
+    # drawing_mode=pygame_menu.baseimage.IMAGE_MODE_REPEAT_XY,
+# )
+#створюємо власну тему - копію стандартної
+mytheme = pygame_menu.themes.THEME_DARK.copy()
+# колір верхньої панелі (останній параметр - 0 робить її прозорою)
+mytheme.title_background_color=(255, 255, 255, 0) 
+#задаємо картинку для фону
+# mytheme.background_color = myimage
+menu = pygame_menu.Menu('solos leveling', WIDTH, HEIGHT,
+                       theme=mytheme)   
+
+user_name = menu.add.text_input("Ім'я :", default='Анонім')
+menu.add.selector('Складність :', [('Hard', 1), ('Easy', 2)], onchange=set_difficulty)
+menu.add.button('Play', start_the_game)
+menu.add.button('Quit', pygame_menu.events.EXIT)
+menu.mainloop(window)
 
 
 while run:
@@ -240,6 +312,7 @@ while run:
     
     window.blit(score_text, (10, 5))
     window.blit(hp_text, (20, 35))
+    # window.blit(win_text, (75, 250))
     display.update()
     clock.tick(FPS)
 
@@ -1446,50 +1519,7 @@ while run:
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+   
 
 
 
