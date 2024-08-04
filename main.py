@@ -11,10 +11,10 @@ game_over_text = font1.render("GAME_OVER", True, (150, 0, 0))
 score_text = font2.render("Score 0", False, (255,255,255))
 hp_text = font2.render("HP 200", False, (255,0,0))
 win_text = font1.render("YOU WIN", False, (0,255,0))
-# mixer.init()
-# mixer.music.load('Тема королевства.mp3')
-# mixer.music.play()
-# mixer.music.set_volume(0.2)
+mixer.init()
+mixer.music.load('Тема королевства.mp3')
+mixer.music.play()
+mixer.music.set_volume(0.2)
 MAP_WIDTH, MAP_HEIGHT =25, 20
 TILESIZE = 35
 
@@ -151,10 +151,7 @@ class Player(Sprite):
             self.y_speed += self.gravity
             self.rect.y += self.y_speed
 
-        door_collide = sprite.spritecollide(self, superdoor,False, sprite.collide_mask)
-        if len(door_collide) > 0:
-            finish = True
-
+    
         coin_collide = sprite.spritecollide(self, coins,True, sprite.collide_mask)
         if len(coin_collide) > 0:
             self.score +=1
@@ -315,6 +312,12 @@ while run:
     window.fill(((0,0,0)))
     if player.hp <= 0:
         finish = True
+
+    door_collide = sprite.spritecollide(player, superdoor,False, sprite.collide_mask)
+    if len(door_collide) > 0:
+        finish = True
+        game_over_text = font1.render("YOU WIN", True, (150,0,0))
+
     all_sprites.draw(window)
     if not finish:
         all_sprites.update()
