@@ -5,7 +5,7 @@ import pygame_menu
 
 init()
 font.init()
-font1 = font.SysFont("impact", 150, )
+font1 = font.SysFont("impact", 151, )
 font2 = font.SysFont("impact", 30, )
 game_over_text = font1.render("GAME_OVER", True, (150, 0, 0))
 score_text = font2.render("Score 0", False, (255,255,255))
